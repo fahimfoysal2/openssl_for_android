@@ -10,8 +10,8 @@ on:
 
 env:
   ANDROID_ABI: armeabi-v7a
-  OPENSSL_VERSION: 3.1.4
-  ANDROID_NDK_VERSION: r26b
+  OPENSSL_VERSION: 3.3.2
+  ANDROID_NDK_VERSION: r28-beta1
   WORK_PATH: /home/runner/work/openssl_for_android/openssl_for_android
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
@@ -42,7 +42,7 @@ jobs:
       - name: Download OpenSSL
         id: download_openssl
         run: |
-          aria2c https://www.openssl.org/source/openssl-${{env.OPENSSL_VERSION}}.tar.gz
+          aria2c https://github.com/openssl/openssl/releases/download/openssl-${{env.OPENSSL_VERSION}}/openssl-${{env.OPENSSL_VERSION}}.tar.gz
           tar -zxvf openssl-${{env.OPENSSL_VERSION}}.tar.gz
           echo "::set-output name=status::success"
 
@@ -69,3 +69,9 @@ jobs:
         with:
           tag_name: ${{ steps.tag.outputs.release_tag }}
           files: ${{env.WORK_PATH}}/OpenSSL_${{env.OPENSSL_VERSION}}_${{env.ANDROID_ABI}}.tar.gz
+
+      - name: Delete workflow runs
+        uses: Mattraks/delete-workflow-runs@main
+        with:
+          retain_days: 0
+          keep_minimum_runs: 8

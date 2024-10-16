@@ -1,11 +1,13 @@
 #!/bin/bash -e
 
 WORK_PATH=$(cd "$(dirname "$0")";pwd)
-ANDROID_NDK_PATH=${WORK_PATH}/android-ndk-r26b
-OPENSSL_SOURCES_PATH=${WORK_PATH}/openssl-3.1.4
+ANDROID_NDK_PATH=${WORK_PATH}/android-ndk-r28-beta1
+OPENSSL_SOURCES_PATH=${WORK_PATH}/openssl-3.3.2
 ANDROID_TARGET_API=$1
 ANDROID_TARGET_ABI=$2
-OUTPUT_PATH=${WORK_PATH}/openssl_3.1.4_${ANDROID_TARGET_ABI}
+OUTPUT_PATH=${WORK_PATH}/openssl_3.3.2_${ANDROID_TARGET_ABI}
+export CXXFLAGS="-fPIC"
+export CPPFLAGS="-DANDROID -fPIC"
 
 OPENSSL_TMP_FOLDER=/tmp/openssl_${ANDROID_TARGET_ABI}
 mkdir -p ${OPENSSL_TMP_FOLDER}
@@ -18,6 +20,7 @@ function build_library {
     rm -rf ${OUTPUT_PATH}/bin  # comment this line if you need openssl binary
     rm -rf ${OUTPUT_PATH}/share # comment this line if the documentstion files are needed
     rm -rf ${OUTPUT_PATH}/ssl
+    rm -rf ${OUTPUT_PATH}/lib/cmake
     rm -rf ${OUTPUT_PATH}/lib/engines*
     rm -rf ${OUTPUT_PATH}/lib/pkgconfig
     rm -rf ${OUTPUT_PATH}/lib/ossl-modules
